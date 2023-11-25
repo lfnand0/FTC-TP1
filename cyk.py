@@ -1,4 +1,6 @@
 from gramatica import gramatica
+from cnf import converter_para_cnf
+
 
 def cyk(rules, sentence):
     n = len(sentence)
@@ -20,23 +22,25 @@ def cyk(rules, sentence):
             for k in range(i, j):
                 for rule in rules:
                     for production in rules[rule]:
-                        if len(production) == 2 and production[0] in table[i][k] and production[1] in table[k + 1][j]:
+                        if (
+                            len(production) == 2
+                            and production[0] in table[i][k]
+                            and production[1] in table[k + 1][j]
+                        ):
                             table[i][j].add(rule)
 
     # Verifica se a sentença pode ser gerada pela gramática
-    return 'S' in table[0][n - 1]
+    return "S" in table[0][n - 1]
 
-variaveis = ["S", "X", "Y"]
+
+variaveis = ["S", "A", "B", "C"]
 terminais = ["a", "b"]
 inicial = "S"
-regras = {
-    'S': ['AB', 'BC'],
-    'A': ['BA', 'a'],
-    'B': ['CC', 'b'],
-    'C': ['AB', 'a']
-}
+regras = {"S": ["AB", "BC"], "A": ["BA", "a"], "B": ["CC", "b"], "C": ["AB", "a"]}
 
 gramatica = gramatica(variaveis, terminais, inicial, regras)
+converter_para_cnf(gramatica)
+gramatica.regras_dict()
 
 # Exemplo de uso
 sentenca = "ababbaabbaabab"
@@ -46,5 +50,3 @@ if resultado:
     print("A gramática pode gerar a sentença.")
 else:
     print("A gramática não pode gerar a sentença.")
-
-
