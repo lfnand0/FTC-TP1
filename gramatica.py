@@ -52,3 +52,16 @@ class gramatica:
             self.regras = gramatica.dict_to_arr(self.regras)
 
         return self.regras
+    
+    def obter_relacao_unitaria(self, simbolos):
+        relacao_unitaria = set()
+
+        for variavel, producoes in self.regras.items():
+            for producao in producoes:
+                if len(producao) == 1 and producao[0] in simbolos:
+                    relacao_unitaria.add(variavel)
+
+        return relacao_unitaria
+
+    def eh_terminal(self, simbolo):
+        return simbolo in self.terminaisz

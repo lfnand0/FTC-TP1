@@ -58,7 +58,6 @@ def remover_vazio(gramatica):
                 variaveis.remove(key)
             regras.pop(key, None)
 
-    print("----DEBUG:", regras_vazias)
     for regra in regras[gramatica.inicial]:
         if regra in regras_vazias:
             regras[gramatica.inicial].append("$")
@@ -67,7 +66,6 @@ def remover_vazio(gramatica):
 
     # delete empty regras
     regras_copia = copy.deepcopy(regras)
-    print("----DEBUG:", regras_copia)
     for key in regras_copia:
         if key != gramatica.inicial:
             values = regras_copia[key]
@@ -94,43 +92,56 @@ def remover_vazio(gramatica):
 
 
 def start(gramatica):
+    gramatica.regras_dict()
     # encontrar regra inicial
-    regra_inicial = False
-    for k in range(len(gramatica.regras)):
-        regra2 = gramatica.regras[k]
-        arr2 = regra2.split(">")
-        var2 = arr2[0]
-        if var2 == gramatica.inicial:
-            regra_inicial = regra2
-            break
+    # regra_inicial = False
+    # for var, producoes in gramatica.regras.items():
+    #     if var == gramatica.inicial:
+    #         regra_inicial = f"{var}>{'|'.join(producoes)}"
+    #         break
 
-    if not regra_inicial:
+    producoes_regra_inicial = gramatica.regras[gramatica.inicial]
+
+    if not producoes_regra_inicial:
         raise ValueError("Regra inicial não encontrada")
 
-    producoes_regra_inicial = regra_inicial.split(">")[1]
+    # producoes_regra_inicial = regra_inicial.split(">")[1]
 
     # remover regras que produzem a inicial
-    for i in range(len(gramatica.regras)):
-        regra = gramatica.regras[i]
-        if regra != regra_inicial:
-            arr = regra.split(">")
-            var = arr[0]
-            producoes = arr[1]
-            if gramatica.inicial in producoes:
-                # substituir com as producoes da regra inicial)
-                producoes = producoes.replace(
-                    gramatica.inicial, producoes_regra_inicial
-                )
+    for var, producoes in gramatica.regras.items():
+        # if f"{var}>{'|'.join(producoes)}" != regra_inicial:
+        #     producoes = [producao.replace(gramatica.inicial, producoes_regra_inicial) for producao in producoes]
+        #     producoes = [producao.replace(gramatica.inicial, var) for producao in producoes]
+        #     producoes = list(set(producoes))
+        #     gramatica.regras[var] = producoes
 
-                # substituir aparições da variável inicial com a var da regra atual
-                producoes = producoes.replace(gramatica.inicial, var)
-                producoes = "|".join(list(set(producoes.split("|"))))
-
-                gramatica.regras[i] = var + ">" + producoes
+        if var != gramatica.inicial:
+            producoes = gramatica.regras[var]
+            for i in range(len(producoes)):
+                producao = producoes[i]
+                if gramatica.inicial in producao:
+                    if len(producao) == 1:
+                        producoes = producoes + producoes_regra_inicial
+                        producoes[i] = producao.replace(gramatica.inicial, var)
+                    else:
+                        for prd in producoes_regra_inicial:
+                            if prd != "$":
+                                producoes.append(
+                                    producao.replace(gramatica.inicial, prd)
+                                )
+                            else:
+                                producoes.append(
+                                    producao.replace(gramatica.inicial, "")
+                                )
+                        producoes.remove(producao)
+                    producoes = list(set(producoes))
+            gramatica.regras[var] = producoes
 
     s0 = gramatica.inicial + "0"
-    gramatica.regras.append(s0 + ">" + gramatica.inicial)
+    gramatica.regras[s0] = [gramatica.inicial]
     gramatica.inicial = s0
+
+    gramatica.regras_arr()
 
 
 def formatar(gramatica):
@@ -230,8 +241,6 @@ def remover_terminais(gramatica):
             for regra in gramatica.regras
             if gramatica.terminais[i] in regra.split(">")[1]
         ]
-
-        print("regras_com_terminal: ", regras_com_terminal)
 
         unitaria = False
         # ver se alguma dessas regras produz apenas a terminal
@@ -373,35 +382,3 @@ def criar_regras_duas_vars(gramatica):
         # passo 4:  encontrar novamente variáveis duplas
         regras = gramatica.regras
         arr_vars = obter_arr_vars(gramatica, regras)
-
-
-def main():
-    # variaveis = input("Variáveis: ")
-    # terminais = input("Terminais: ")
-    # inicial = input("Inicial: ")
-    # regras = input("Regras: ")
-
-    variaveis = ["S", "X", "Y"]
-    terminais = ["a", "b"]
-    inicial = "S"
-    regras = ["S>XY|$", "X>SY|a|bb", "Y>aa"]
-
-    gram = gramatica(variaveis, terminais, inicial, regras)
-    print(
-        "1------------------------------------------------------------------------------------------------------------------------------------"
-    )
-    print(gram)
-    formatar(gram)
-    print(
-        "2-----------------------------------------------------------------------------------------------------------------------------------"
-    )
-    print(gram)
-    gram.regras_arr()
-    converter_para_cnf(gram)
-    print(
-        "3------------------------------------------------------------------------------------------------------------------------------------"
-    )
-    print(gram)
-
-
-main()  #

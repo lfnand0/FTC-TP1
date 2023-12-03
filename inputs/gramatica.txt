@@ -1,0 +1,11 @@
+variaveis = ["S", "A", "B", "C"]
+terminais = ["a", "b"]
+inicial = "S"
+regras = {"S": ["AB", "BC"], "A": ["a", "bA", "CCA"], "B": ["CC", "b"], "C": ["AB", "a"]}
+
+bbbbbbbbbbbbab
+aaaaaaaaaaaaba
+aab
+baa
+a
+b
