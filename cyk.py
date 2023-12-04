@@ -33,21 +33,21 @@ def cyk(regras, sentencas):
     return "S" in table[0][n - 1]
 
 
-variaveis = ["S", "A", "B", "C"]
-terminais = ["a", "b"]
-inicial = "S"
-regras = {"S": ["AB", "BC"], "A": ["a", "bA", "CCA"],
-          "B": ["CC", "b"], "C": ["AB", "a"]}
+# variaveis = ["S", "A", "B", "C"]
+# terminais = ["a", "b"]
+# inicial = "S"
+# regras = {"S": ["AB", "BC"], "A": ["a", "bA", "CCA"],
+#           "B": ["CC", "b"], "C": ["AB", "a"]}
 
-gramatica = gramatica(variaveis, terminais, inicial, regras)
-converter_para_cnf(gramatica)
-gramatica.regras_dict()
+# gramatica = gramatica(variaveis, terminais, inicial, regras)
+# converter_para_cnf(gramatica)
+# gramatica.regras_dict()
 
-# Exemplo de uso
-sentenca = "bbbbbbbbbbbbab"
+# # Exemplo de uso
+# sentenca = "bbbbbbbbbbbbab"
 
-resultado = cyk(gramatica.regras, sentenca)
-if resultado:
-    print("A gramática pode gerar a sentença.")
-else:
-    print("A gramática não pode gerar a sentença.")
+# resultado = cyk(gramatica.regras, sentenca)
+# if resultado:
+#     print("A gramática pode gerar a sentença.")
+# else:
+#     print("A gramática não pode gerar a sentença.")

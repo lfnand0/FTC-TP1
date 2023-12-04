@@ -1,3 +1,6 @@
+from builtins import dict, len, list, set
+
+
 class gramatica:
     def __init__(self, variaveis, terminais, inicial, regras):
         self.variaveis = variaveis  # char[]
@@ -58,10 +61,10 @@ class gramatica:
 
         for variavel, producoes in self.regras.items():
             for producao in producoes:
-                if len(producao) == 1 and producao[0] in simbolos:
+                if len(producao) == 1 and producao in simbolos:
                     relacao_unitaria.add(variavel)
 
         return relacao_unitaria
 
     def eh_terminal(self, simbolo):
-        return simbolo in self.terminaisz
+        return simbolo in self.terminais

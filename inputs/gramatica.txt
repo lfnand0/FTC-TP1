@@ -1,7 +1,7 @@
-variaveis = ["S", "A", "B", "C"]
-terminais = ["a", "b"]
+variaveis = ["S", "A", "B", "C", "D", "X"]
+terminais = ["a", "b", "c"]
 inicial = "S"
-regras = {"S": ["AB", "BC"], "A": ["a", "bA", "CCA"], "B": ["CC", "b"], "C": ["AB", "a"]}
+regras = {"S": ["AC", "DC"], "A": ["aAb", "bB"], "B": ["bB", "$"], "C": ["cC", "$"], "D": ["aDb", "aX"], "X": ["aX", "$"]}
 
 bbbbbbbbbbbbab
 aaaaaaaaaaaaba
@@ -9,3 +9,12 @@ aab
 baa
 a
 b
+aaabbbcc
+ababaccacac
+aaabb
+aaabbbbc
+aabb
+aaaaaabbbbbbcccccccccc
+cccccc
+acccccc
+bcccccccc

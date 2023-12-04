@@ -4,88 +4,76 @@ from gramatica import gramatica
 
 def converter_para_cnf(gramatica):
     gramatica.regras_arr()
-    print("---------- CONVERTER PARA CNF ")
+    # print("---------- CONVERTER PARA CNF ")
     if not validar(gramatica):
         return
 
     # criar regra s0
-    print("\n---------- CRIAR REGRA S0 (START)-----------")
+    # print("\n---------- CRIAR REGRA S0 (START)-----------")
     start(gramatica)
-    print(gramatica)
+    # print(gramatica)
 
-    print("\n---------- REMOVER MAIS DE 2 VARIÁVEIS (BIN)-----------")
+    # print("\n---------- REMOVER MAIS DE 2 VARIÁVEIS (BIN)-----------")
     criar_regras_duas_vars(gramatica)
-    print(gramatica)
+    # print(gramatica)
 
-    print("\n---------- REMOVER VAZIO (DEL)-----------")
+    # print("\n---------- REMOVER VAZIO (DEL)-----------")
     remover_vazio(gramatica)
-    print(gramatica)
+    # print(gramatica)
 
-    print("\n---------- REMOVER REGRAS UNITÁRIAS (UNIT)-----------")
+    # print("\n---------- REMOVER REGRAS UNITÁRIAS (UNIT)-----------")
     remover_unitarias(gramatica)
-    print(gramatica)
+    # print(gramatica)
 
-    print("\n---------- REMOVER TERMINAIS (TERM)-----------")
+    # print("\n---------- REMOVER TERMINAIS (TERM)-----------")
     remover_terminais(gramatica)
-    print(gramatica)
+    # print(gramatica)
 
     return gramatica
 
 
 def remover_vazio(gramatica):
     regras = {
-        variable: production.split("|")
-        for variable, production in [rule.split(">") for rule in gramatica.regras]
+        variavel: producao.split("|")
+        for variavel, producao in [regra.split(">") for regra in gramatica.regras]
     }
     variaveis = gramatica.variaveis
-
-    # list with keys of empty regras
     regras_vazias = []
 
-    # find non-terminal regras and add them in list
     regras_copia = copy.deepcopy(regras)
-    for key in regras_copia:
-        values = regras_copia[key]
-        for i in range(len(values)):
-            # if key gives an empty state and is not in the list, add it
-            if values[i] == "$" and key not in regras_vazias:
-                regras_vazias.append(key)
-                # remove empty state
-                regras[key].remove(values[i])
-        # if key doesn't contain any values, remove it from the dictionary
-        if len(regras[key]) == 0:
-            if key not in regras:
-                variaveis.remove(key)
-            regras.pop(key, None)
+    for var in regras_copia:
+        val = regras_copia[var]
+        for i in range(len(val)):
+            if val[i] == "$" and var not in regras_vazias:
+                regras_vazias.append(var)
+                regras[var].remove(val[i])
+        if len(regras[var]) == 0:
+            if var not in regras:
+                variaveis.remove(var)
+            regras.pop(var, None)
 
     for regra in regras[gramatica.inicial]:
         if regra in regras_vazias:
             regras[gramatica.inicial].append("$")
             break
-    # if initial variable produces one of the ruls in regras_vazia, add $ to its productions
 
-    # delete empty regras
     regras_copia = copy.deepcopy(regras)
-    for key in regras_copia:
-        if key != gramatica.inicial:
-            values = regras_copia[key]
+    for var in regras_copia:
+        if var != gramatica.inicial:
+            values = regras_copia[var]
             for i in range(len(values)):
-                # check for regras in the form A->BC or A->CB, where B is in regras_vazias
-                # and C in vocabulary
-                if len(values[i]) == 2:
-                    # check for the rule in the form A->BC, excluding the case that
-                    # gives A->A as a result)
-                    if values[i][0] in regras_vazias and key != values[i][1]:
-                        regras.setdefault(key, []).append(values[i][1])
-                    # check for the rule in the form A->CB, excluding the case that
-                    # gives A->A as a result)
-                    if values[i][1] in regras_vazias and key != values[i][0]:
-                        if values[i][0] != values[i][1]:
-                            regras.setdefault(key, []).append(values[i][0])
 
-    # Convert the regras back to the format used in the Gramatica class
+                if len(values[i]) == 2:
+
+                    if values[i][0] in regras_vazias and var != values[i][1]:
+                        regras.setdefault(var, []).append(values[i][1])
+
+                    if values[i][1] in regras_vazias and var != values[i][0]:
+                        if values[i][0] != values[i][1]:
+                            regras.setdefault(var, []).append(values[i][0])
+
     regras_copia = [
-        f"{key}>{'|'.join(values) if values else '$'}" for key, values in regras.items()
+        f"{var}>{'|'.join(producao) if producao else '$'}" for var, producao in regras.items()
     ]
     gramatica.regras = regras_copia
     gramatica.variaveis = variaveis
@@ -140,6 +128,7 @@ def start(gramatica):
     s0 = gramatica.inicial + "0"
     gramatica.regras[s0] = [gramatica.inicial]
     gramatica.inicial = s0
+    gramatica.variaveis = [s0] + gramatica.variaveis
 
     gramatica.regras_arr()
 
